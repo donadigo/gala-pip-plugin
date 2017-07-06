@@ -244,6 +244,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
 
     private void on_resize_drag_end (Clutter.Actor actor, float event_x, float event_y, Clutter.ModifierType type) {
         reposition_resize_handle ();
+        update_screen_position ();
     }
 
     private void on_resize_drag_motion (Clutter.Actor actor, float delta_x, float delta_y) {
