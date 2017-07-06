@@ -57,11 +57,17 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         reactive = true;
 
         set_pivot_point (0.5f, 0.5f);
+        set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
 
         var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);
 
         clone = new Clutter.Clone (window_actor.get_texture ());
+
+        move_action = new MoveAction ();
+        move_action.drag_begin.connect (() => on_move_begin ());
+        move_action.drag_end.connect (() => on_move_end ());
+        move_action.move.connect (on_move);
 
         container = new Clutter.Actor ();
         container.reactive = true;
@@ -69,6 +75,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         container.clip_rect = container_clip;
         container.add_effect (new Gala.ShadowEffect (SHADOW_SIZE, 2));
         container.add_child (clone);
+        container.add_action (move_action);
 
         if (container_clip == null) {
             window_actor.notify["allocation"].connect (on_allocation_changed);
@@ -77,6 +84,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
 
         update_size ();
         update_container_position ();
+        set_position (SCREEN_MARGIN, screen_height - SCREEN_MARGIN - height);
 
         close_action = new Clutter.ClickAction ();
         close_action.clicked.connect (on_close_click_clicked);
@@ -112,14 +120,6 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         add_child (close_button);
         add_child (resize_button);
         add_child (resize_handle);
-
-        move_action = new MoveAction ();
-        move_action.drag_begin.connect (() => on_move_begin ());
-        move_action.drag_end.connect (() => on_move_end ());
-        move_action.move.connect (on_move);
-        container.add_action (move_action);
-
-        set_position (SCREEN_MARGIN, screen_height - SCREEN_MARGIN - height);
     }
 
     // From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
@@ -165,6 +165,17 @@ public class GalaPW.PopupWindow : Clutter.Actor {
             screen_width: screen_width,
             screen_height: screen_height
         );
+    }
+
+    public override void show () {
+        base.show ();
+
+        opacity = 0;
+
+        set_easing_duration (200);
+        opacity = 255;
+
+        set_easing_duration (0);
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
@@ -261,7 +272,6 @@ public class GalaPW.PopupWindow : Clutter.Actor {
 
     private void on_close_click_clicked () {
         set_easing_duration (FADE_OUT_TIMEOUT);
-        set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
 
         opacity = 0;
 
@@ -323,6 +333,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
 
     private void update_screen_position () {
         set_easing_duration (300);
+        set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
 
         if (x <= SCREEN_MARGIN) {
             x = SCREEN_MARGIN;
@@ -336,6 +347,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
             y = screen_height - SCREEN_MARGIN - height;
         }
 
+        set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
         set_easing_duration (0);
     }
 
