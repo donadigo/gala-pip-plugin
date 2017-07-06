@@ -23,7 +23,7 @@ configure_file (${CMAKE_SOURCE_DIR}/src/config.vala.cmake ${CMAKE_SOURCE_DIR}/sr
 
 vala_precompile(VALA_C
 	src/Main.vala
-	src/SelectionActor.vala
+	src/SelectionArea.vala
 	src/PopupWindow.vala
 	src/ShadowEffect.vala
 	src/MoveAction.vala
