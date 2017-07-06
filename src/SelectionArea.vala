@@ -20,7 +20,7 @@ public class GalaPW.SelectionArea : Clutter.Actor {
     public signal void selected (float x, float y);
     public signal void closed ();
 
-	public Gala.WindowManager wm { get; construct; }
+    public Gala.WindowManager wm { get; construct; }
     private Gala.ModalProxy? modal_proxy;
 
     private Gdk.Point start_point;
@@ -30,15 +30,15 @@ public class GalaPW.SelectionArea : Clutter.Actor {
     private bool clicked = false;
     public bool finished = false;
 
-	public SelectionArea (Gala.WindowManager wm) {
-		Object (wm: wm);
-	}
+    public SelectionArea (Gala.WindowManager wm) {
+        Object (wm: wm);
+    }
 
-	construct {
+    construct {
         start_point = { 0,0 };
         end_point = { 0,0 };
-		visible = true;
-		reactive = true;
+        visible = true;
+        reactive = true;
 
         int screen_width, screen_height;
         wm.get_screen ().get_size (out screen_width, out screen_height);
@@ -47,21 +47,21 @@ public class GalaPW.SelectionArea : Clutter.Actor {
 
         var canvas = new Clutter.Canvas ();
         canvas.set_size (screen_width, screen_height);
-		canvas.draw.connect (draw_area);
+        canvas.draw.connect (draw_area);
         set_content (canvas);
 
         canvas.invalidate ();
-	}
+    }
 
-	public override bool key_press_event (Clutter.KeyEvent e) {
-		if (e.keyval == Clutter.Key.Escape) {
-			close ();
+    public override bool key_press_event (Clutter.KeyEvent e) {
+        if (e.keyval == Clutter.Key.Escape) {
+            close ();
             closed ();
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
     public override bool button_press_event (Clutter.ButtonEvent e) {
         if (dragging || e.button != 1) {
@@ -141,7 +141,7 @@ public class GalaPW.SelectionArea : Clutter.Actor {
         height = (start_point.y - end_point.y).abs ();
     }
 
-	private bool draw_area (Cairo.Context ctx) {
+    private bool draw_area (Cairo.Context ctx) {
         Clutter.cairo_clear (ctx);
 
         if (!dragging) {
@@ -160,6 +160,6 @@ public class GalaPW.SelectionArea : Clutter.Actor {
         ctx.set_line_width (1.0);
         ctx.stroke ();
 
-		return true;
-	}
+        return true;
+    }
 }
