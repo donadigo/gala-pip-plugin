@@ -205,11 +205,8 @@ public class GalaPW.PopupWindow : Clutter.Actor
 
 	private void on_move_begin ()
 	{
-		var manager = Gdk.Display.get_default ().get_device_manager ();
-		var pointer = manager.get_client_pointer ();
-
 		int px, py;
-		pointer.get_position (null, out px, out py);
+		get_current_cursor_position (out px, out py);
 
 		x_offset_press = (int)(px - x);
 		y_offset_press = (int)(py - y);
