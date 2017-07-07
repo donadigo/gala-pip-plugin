@@ -17,13 +17,16 @@
  * Authored by: Adam Bieńkowski <donadigos159@gmail.com>
  */
 
-public class GalaPW.Plugin : Gala.Plugin
-{
+public class GalaPW.Plugin : Gala.Plugin {
+    private Gee.ArrayList<PopupWindow> windows;
+
     private Gala.WindowManager? wm = null;
     private SelectionArea? selection_area;
 
-    // This function is called as soon as Gala has started and gives you
-    // an instance of the GalaWindowManager class.
+    construct {
+        windows = new Gee.ArrayList<PopupWindow> ();
+    }
+
     public override void initialize (Gala.WindowManager wm) {
         this.wm = wm;
 
@@ -35,9 +38,13 @@ public class GalaPW.Plugin : Gala.Plugin
     }
 
     public override void destroy () {
-        if (wm == null) {
-            return;
+        clear_selection_area ();
+
+        foreach (var popup_window in windows) {
+            untrack_window (popup_window);
         }
+
+        windows.clear ();
     }
 
     private void key_handler_func (Meta.Display display, Meta.Screen screen, Meta.Window? window, Clutter.KeyEvent? event, Meta.KeyBinding binding) {
@@ -72,9 +79,7 @@ public class GalaPW.Plugin : Gala.Plugin
         var selected = get_window_actor_at (x, y);
         if (selected != null) {
             var popup_window = new PopupWindow (selected, null, screen_width, screen_height);
-            popup_window.closed.connect (() => on_popup_window_closed (popup_window));
-            track_actor (popup_window);
-            wm.ui_group.add_child (popup_window);
+            add_window (popup_window);
         }
     }
 
@@ -95,17 +100,15 @@ public class GalaPW.Plugin : Gala.Plugin
             var clip = rect.init (point_x, point_y, width, height);
 
             var popup_window = new PopupWindow (active, clip, screen_width, screen_height);
-            popup_window.closed.connect (() => on_popup_window_closed (popup_window));
-            track_actor (popup_window);
-            wm.ui_group.add_child (popup_window);
+            add_window (popup_window);
         }
     }
 
     private void clear_selection_area () {
-        untrack_actor (selection_area);
-        update_region ();
-
         if (selection_area != null) {
+            untrack_actor (selection_area);
+            update_region ();
+
             selection_area.destroy ();
         }
     }
@@ -155,7 +158,19 @@ public class GalaPW.Plugin : Gala.Plugin
         return active;
     }
 
-    private void on_popup_window_closed (PopupWindow popup_window) {
+    private void add_window (PopupWindow popup_window) {
+        popup_window.closed.connect (() => remove_window (popup_window));
+        windows.add (popup_window);
+        track_actor (popup_window);
+        wm.ui_group.add_child (popup_window);
+    }
+
+    private void remove_window (PopupWindow popup_window) {
+        windows.remove (popup_window);
+        untrack_window (popup_window);
+    }
+
+    private void untrack_window (PopupWindow popup_window) {
         untrack_actor (popup_window);
         update_region ();
         popup_window.destroy ();
