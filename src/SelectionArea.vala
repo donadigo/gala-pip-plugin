@@ -28,7 +28,6 @@ public class GalaPW.SelectionArea : Clutter.Actor {
 
     private bool dragging = false;
     private bool clicked = false;
-    public bool finished = false;
 
     public SelectionArea (Gala.WindowManager wm) {
         Object (wm: wm);
