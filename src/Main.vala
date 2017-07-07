@@ -22,7 +22,8 @@ public class GalaPW.Plugin : Gala.Plugin
 	private Gala.WindowManager? wm = null;
 	private SelectionArea? selection_area;
 
-	construct {
+	construct
+    {
 		windows = new Gee.ArrayList<PopupWindow> ();
 	}
 
