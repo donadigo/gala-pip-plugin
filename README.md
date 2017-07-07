@@ -3,12 +3,24 @@ A simple [Gala](https://github.com/elementary/gala) plugin to have a Picture in 
 
 ![screenshot](Screenshot.png)
 
-### Usage
+## Usage
 To activate a window selection, hit **Super + D** and select a window. A popup window with live preview will show at the bottom left of the screen. You can move it to whatever position on the screen you like. You can also select a specific area of a window by dragging across it, similar to how you select an area in the Screenshot Tool. The selected area will be applied to the currently focused window. 
 
-The window can be closed / resized by simply hovering over the popup window. This is also similar to how closing a notification is done in Gala. 
+The window can be closed / resized simply by hovering over the popup window. This is also similar to how closing a notification works in Gala. 
+
+## Installation
+
+### Dependencies
+These dependencies must be present before building:
+- `valac`
+- `libgala-dev`
+- `libgranite-dev`
+
+You can install these on a Ubuntu-based system by executing this command:
+`sudo apt install valac libgranite-dev libgala-dev`
 
 ### Building
+Open the root directory of this project and in your terminal execute:
 ```bash
 $ mkdir build && cd build
 $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr
@@ -16,6 +28,7 @@ $ make
 ```
 
 ### Installing
+After the building ended, without closing the terminal, execute this command as root: 
 ```bash
 $ make install
 ```
