@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2016 Santiago León O.
+//  Copyright (C) 2017 Santiago León O., Adam Bieńkowski
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
