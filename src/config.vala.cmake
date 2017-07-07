@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace GalaPW.Config {
-    public const string PLUGIN_DATA_DIR = "${PLUGIN_DATA_DIR}";
+namespace GalaPW.Config
+{
+	public const string PLUGIN_DATA_DIR = "${PLUGIN_DATA_DIR}";
 }

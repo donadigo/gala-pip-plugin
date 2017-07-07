@@ -16,17 +16,20 @@
 //
 
 // This works partially, because of the issue with smooth edges
-public class GalaPW.RoundedRectangleEffect : Clutter.Effect {
-    public float radius { get; construct; }
+public class GalaPW.RoundedRectangleEffect : Clutter.Effect
+{
+	public float radius { get; construct; }
 
-    public RoundedRectangleEffect (float radius) {
-        Object (radius: radius);
-    }
+	public RoundedRectangleEffect (float radius)
+	{
+		Object (radius: radius);
+	}
 
-    public override void paint (Clutter.EffectPaintFlags flags) {
-        Cogl.Path.round_rectangle (0, 0, actor.width, actor.height, radius, 0.05f);
-        Cogl.clip_push_from_path ();
-        actor.continue_paint ();
-        Cogl.clip_pop ();
-    }
+	public override void paint (Clutter.EffectPaintFlags flags)
+	{
+		Cogl.Path.round_rectangle (0, 0, actor.width, actor.height, radius, 0.05f);
+		Cogl.clip_push_from_path ();
+		actor.continue_paint ();
+		Cogl.clip_pop ();
+	}
 }
