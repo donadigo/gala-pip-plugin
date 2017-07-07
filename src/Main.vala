@@ -23,7 +23,7 @@ public class GalaPW.Plugin : Gala.Plugin
 	private SelectionArea? selection_area;
 
 	construct
-    {
+	{
 		windows = new Gee.ArrayList<PopupWindow> ();
 	}
 
