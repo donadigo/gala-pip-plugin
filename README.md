@@ -12,12 +12,13 @@ The window can be closed / resized simply by hovering over the popup window. Thi
 
 ### Dependencies
 These dependencies must be present before building:
+- `cmake`
 - `valac`
 - `libgala-dev`
 - `libgranite-dev`
 
 You can install these on a Ubuntu-based system by executing this command:
-`sudo apt install valac libgranite-dev libgala-dev`
+`sudo apt install valac libgranite-dev libgala-dev cmake`
 
 ### Building
 Open the root directory of this project and in your terminal execute:
