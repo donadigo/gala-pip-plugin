@@ -85,7 +85,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         update_container_position ();
 
         int monitor_height;
-        get_current_monitor_size (null, out monitor_height);
+        get_current_monitor_size (null, out monitor_height, null, null);
 
         set_position (SCREEN_MARGIN, monitor_height - SCREEN_MARGIN - height);
 
@@ -328,22 +328,28 @@ public class GalaPW.PopupWindow : Clutter.Actor {
     }
 
     private void update_screen_position () {
-        int monitor_width, monitor_height;
-        get_current_monitor_size (out monitor_width, out monitor_height);
+        int monitor_width, monitor_height, monitor_x, monitor_y;
+        get_current_monitor_size (out monitor_width, out monitor_height, out monitor_x, out monitor_y);
 
         set_easing_duration (300);
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
 
-        if (x <= SCREEN_MARGIN) {
-            x = SCREEN_MARGIN;
-        } else if (x + width >= monitor_width - SCREEN_MARGIN) {
-            x = monitor_width - SCREEN_MARGIN - width;
+        int screen_limit_start = SCREEN_MARGIN + monitor_x;
+        int screen_limit_end = monitor_width - screen_limit - width;
+
+        if (x <= screen_limit_start) {
+            x = screen_limit_start;
+        } else if (x >= screen_limit_end) {
+            x = screen_limit_end;
         }
 
-        if (y <= SCREEN_MARGIN) {
-            y = SCREEN_MARGIN;
-        } else if (y + height >= monitor_height - SCREEN_MARGIN) {
-            y = monitor_height - SCREEN_MARGIN - height;
+        screen_limit_start = SCREEN_MARGIN + monitor_y;
+        screen_limit_end = monitor_width - screen_limit - width;
+
+        if (y <= screen_limit_start) {
+            y = screen_limit_start;
+        } else if (y >= screen_limit_end) {
+            y = screen_limit_end;
         }
 
         set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
@@ -358,12 +364,14 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         resize_handle.set_position (width - BUTTON_SIZE, height - BUTTON_SIZE);
     }
 
-    private void get_current_monitor_size (out int monitor_width, out int monitor_height) {
+    private void get_current_monitor_size (out int monitor_width, out int monitor_height, out int monitor_x, out int monitor_y) {
         var screen = wm.get_screen ();
         var rect = screen.get_monitor_geometry (screen.get_current_monitor ());
 
         monitor_width = rect.width;
         monitor_height = rect.height;
+        monitor_x = rect.x;
+        monitor_y = rect.y;
     }
 
     private void get_target_window_size (out float width, out float height) {
