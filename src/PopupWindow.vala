@@ -334,8 +334,8 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         set_easing_duration (300);
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
 
-        int screen_limit_start = SCREEN_MARGIN + monitor_x;
-        int screen_limit_end = monitor_width - screen_limit - width;
+        var screen_limit_start = SCREEN_MARGIN + monitor_x;
+        var screen_limit_end = monitor_width + monitor_x - SCREEN_MARGIN - width;
 
         if (x <= screen_limit_start) {
             x = screen_limit_start;
@@ -344,7 +344,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         }
 
         screen_limit_start = SCREEN_MARGIN + monitor_y;
-        screen_limit_end = monitor_width - screen_limit - width;
+        screen_limit_end = monitor_height + monitor_y - SCREEN_MARGIN - height;
 
         if (y <= screen_limit_start) {
             y = screen_limit_start;
