@@ -85,7 +85,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         update_container_position ();
 
         int monitor_height;
-        get_current_monitor_size (null, out monitor_height, null, null);
+        get_current_monitor_rect (null, out monitor_height, null, null);
 
         set_position (SCREEN_MARGIN, monitor_height - SCREEN_MARGIN - height);
 
@@ -329,7 +329,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
 
     private void update_screen_position () {
         int monitor_width, monitor_height, monitor_x, monitor_y;
-        get_current_monitor_size (out monitor_width, out monitor_height, out monitor_x, out monitor_y);
+        get_current_monitor_rect (out monitor_width, out monitor_height, out monitor_x, out monitor_y);
 
         set_easing_duration (300);
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
@@ -364,7 +364,7 @@ public class GalaPW.PopupWindow : Clutter.Actor {
         resize_handle.set_position (width - BUTTON_SIZE, height - BUTTON_SIZE);
     }
 
-    private void get_current_monitor_size (out int monitor_width, out int monitor_height, out int monitor_x, out int monitor_y) {
+    private void get_current_monitor_rect (out int monitor_width, out int monitor_height, out int monitor_x, out int monitor_y) {
         var screen = wm.get_screen ();
         var rect = screen.get_monitor_geometry (screen.get_current_monitor ());
 
