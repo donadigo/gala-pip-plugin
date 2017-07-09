@@ -113,7 +113,7 @@ public class GalaPW.Plugin : Gala.Plugin {
 
             var window = actor.get_meta_window ();
             var bbox = actor.get_allocation_box ();
-            if (!window.is_hidden () && bbox.contains (x, y)) {
+            if (!window.is_hidden () && !window.is_skip_taskbar () && bbox.contains (x, y)) {
                 selected = actor;
             }
         });
@@ -135,7 +135,7 @@ public class GalaPW.Plugin : Gala.Plugin {
             }
 
             var window = actor.get_meta_window ();
-            if (window.has_focus ()) {
+            if (!window.is_hidden () && !window.is_skip_taskbar () && window.has_focus ()) {
                 active = actor;
             }
         });
