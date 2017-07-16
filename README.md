@@ -1,3 +1,6 @@
+# ABANDONED
+**This branch is abandoned since it got merged into Gala master itself as part of it's default set of plugins (in https://github.com/elementary/gala/commit/52678172d39b77881db1b6bc3cf5f167da52f4da). The development will now only happen in Gala's master branch. Please do not file any new bugs or feature requests here, instead file them here: https://github.com/elementary/gala/issues**
+
 # Gala Picture In Picture plugin
 A simple [Gala](https://github.com/elementary/gala) plugin to have a Picture in Picture functionality. It works by selecting a particular window or it's area you want to show in the popup window.
 
