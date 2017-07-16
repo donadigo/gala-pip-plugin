@@ -89,7 +89,7 @@ public class GalaPW.PopupWindow : Clutter.Actor
 		Meta.Rectangle monitor_rect;
 		get_current_monitor_rect (out monitor_rect);
 
-		set_position (SCREEN_MARGIN, monitor_rect.height - SCREEN_MARGIN - height);
+		set_position (SCREEN_MARGIN + monitor_rect.x, monitor_rect.height + monitor_rect.y - SCREEN_MARGIN - height);
 
 		close_action = new Clutter.ClickAction ();
 		close_action.clicked.connect (on_close_click_clicked);
