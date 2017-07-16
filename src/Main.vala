@@ -18,6 +18,8 @@
  */
 
 public class GalaPW.Plugin : Gala.Plugin {
+    private const int MIN_SELECTION_SIZE = 30;
+
     private Gee.ArrayList<PopupWindow> windows;
 
     private Gala.WindowManager? wm = null;
@@ -63,28 +65,35 @@ public class GalaPW.Plugin : Gala.Plugin {
         selection_area.start_selection ();
     }
 
-    private void on_selection_actor_selected (float x, float y) {
+    private void on_selection_actor_selected (int x, int y) {
         clear_selection_area ();
-
-        var selected = get_window_actor_at (x, y);
-        if (selected != null) {
-            var popup_window = new PopupWindow (wm, selected, null);
-            add_window (popup_window);
-        }
+        select_window_at (x, y);
     }
 
     private void on_selection_actor_captured (int x, int y, int width, int height) {
         clear_selection_area ();
 
-        var active = get_active_window_actor ();
-        if (active != null) {
-            int point_x = x - (int)active.x;
-            int point_y = y - (int)active.y;
+        if (width <= MIN_SELECTION_SIZE || height <= MIN_SELECTION_SIZE) {
+            select_window_at (x, y);
+        } else {
+            var active = get_active_window_actor ();
+            if (active != null) {
+                int point_x = x - (int)active.x;
+                int point_y = y - (int)active.y;
 
-            var rect = Clutter.Rect.alloc ();
-            var clip = rect.init (point_x, point_y, width, height);
+                var rect = Clutter.Rect.alloc ();
+                var clip = rect.init (point_x, point_y, width, height);
 
-            var popup_window = new PopupWindow (wm, active, clip);
+                var popup_window = new PopupWindow (wm, active, clip);
+                add_window (popup_window);
+            }
+        }
+    }
+
+    private void select_window_at (int x, int y) {
+        var selected = get_window_actor_at (x, y);
+        if (selected != null) {
+            var popup_window = new PopupWindow (wm, selected, null);
             add_window (popup_window);
         }
     }
