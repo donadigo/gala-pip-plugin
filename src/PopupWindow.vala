@@ -364,8 +364,8 @@ public class GalaPW.PopupWindow : Clutter.Actor
 
 		x = x.clamp (screen_limit_start, screen_limit_end);
 
-        screen_limit_start = SCREEN_MARGIN + monitor_y;
-        screen_limit_end = monitor_height + monitor_y - SCREEN_MARGIN - height;
+		screen_limit_start = SCREEN_MARGIN + monitor_y;
+		screen_limit_end = monitor_height + monitor_y - SCREEN_MARGIN - height;
 
 		y = y.clamp (screen_limit_start, screen_limit_end);
 
