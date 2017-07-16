@@ -18,7 +18,7 @@
 public class GalaPW.SelectionArea : Clutter.Actor
 {
 	public signal void captured (int x, int y, int width, int height);
-	public signal void selected (float x, float y);
+	public signal void selected (int x, int y);
 	public signal void closed ();
 
 	public Gala.WindowManager wm { get; construct; }
@@ -87,7 +87,7 @@ public class GalaPW.SelectionArea : Clutter.Actor
 		}
 
 		if (!dragging) {
-			selected (e.x, e.y);
+			selected ((int)e.x, (int)e.y);
 			close ();
 			return true;
 		}

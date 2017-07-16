@@ -27,6 +27,7 @@ public class GalaPW.PopupWindow : Clutter.Actor
 
 	public signal void closed ();
 
+	public Gala.WindowManager wm { get; construct; }
 	public Meta.WindowActor window_actor { get; construct; }
 	public Clutter.Rect? container_clip { get; construct; }
 	public int screen_width { get; construct; }
@@ -84,7 +85,11 @@ public class GalaPW.PopupWindow : Clutter.Actor
 
 		update_size ();
 		update_container_position ();
-		set_position (SCREEN_MARGIN, screen_height - SCREEN_MARGIN - height);
+
+		Meta.Rectangle monitor_rect;
+		get_current_monitor_rect (out monitor_rect);
+
+		set_position (SCREEN_MARGIN, monitor_rect.height - SCREEN_MARGIN - height);
 
 		close_action = new Clutter.ClickAction ();
 		close_action.clicked.connect (on_close_click_clicked);
@@ -158,17 +163,11 @@ public class GalaPW.PopupWindow : Clutter.Actor
 		Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null, out x, out y);
 	}
 
-	public PopupWindow (Meta.WindowActor window_actor,
-						Clutter.Rect? container_clip,
-						int screen_width,
-						int screen_height)
+	public PopupWindow (Gala.WindowManager wm,
+						Meta.WindowActor window_actor,
+						Clutter.Rect? container_clip)
 	{
-		Object (
-			window_actor: window_actor,
-			container_clip: container_clip,
-			screen_width: screen_width,
-			screen_height: screen_height
-		);
+		Object (wm: wm, window_actor: window_actor, container_clip: container_clip);
 	}
 
 	public override void show ()
@@ -349,20 +348,26 @@ public class GalaPW.PopupWindow : Clutter.Actor
 
 	private void update_screen_position ()
 	{
+		Meta.Rectangle monitor_rect;
+		get_current_monitor_rect (out monitor_rect);
+
+		int monitor_x = monitor_rect.x;
+		int monitor_y = monitor_rect.y;
+		int monitor_width = monitor_rect.width;
+		int monitor_height = monitor_rect.height;
+
 		set_easing_duration (300);
 		set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
 
-		if (x <= SCREEN_MARGIN) {
-			x = SCREEN_MARGIN;
-		} else if (x + width >= screen_width - SCREEN_MARGIN) {
-			x = screen_width - SCREEN_MARGIN - width;
-		}
+		var screen_limit_start = SCREEN_MARGIN + monitor_x;
+		var screen_limit_end = monitor_width + monitor_x - SCREEN_MARGIN - width;
 
-		if (y <= SCREEN_MARGIN) {
-			y = SCREEN_MARGIN;
-		} else if (y + height >= screen_height - SCREEN_MARGIN) {
-			y = screen_height - SCREEN_MARGIN - height;
-		}
+		x = x.clamp (screen_limit_start, screen_limit_end);
+
+        screen_limit_start = SCREEN_MARGIN + monitor_y;
+        screen_limit_end = monitor_height + monitor_y - SCREEN_MARGIN - height;
+
+		y = y.clamp (screen_limit_start, screen_limit_end);
 
 		set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
 		set_easing_duration (0);
@@ -376,6 +381,12 @@ public class GalaPW.PopupWindow : Clutter.Actor
 	private void reposition_resize_handle ()
 	{
 		resize_handle.set_position (width - BUTTON_SIZE, height - BUTTON_SIZE);
+	}
+
+	private void get_current_monitor_rect (out Meta.Rectangle rect)
+	{
+		var screen = wm.get_screen ();
+		rect = screen.get_monitor_geometry (screen.get_current_monitor ());
 	}
 
 	private void get_target_window_size (out float width, out float height)

@@ -17,6 +17,8 @@
 
 public class GalaPW.Plugin : Gala.Plugin
 {
+	private const int MIN_SELECTION_SIZE = 30;
+
 	private Gee.ArrayList<PopupWindow> windows;
 
 	private Gala.WindowManager? wm = null;
@@ -56,12 +58,7 @@ public class GalaPW.Plugin : Gala.Plugin
 
 	private void show_selection_area ()
 	{
-		var screen = wm.get_screen ();
-		var rect = screen.get_monitor_geometry (screen.get_primary_monitor ());
-
 		selection_area = new SelectionArea (wm);
-		selection_area.set_size (rect.width, rect.height);
-		selection_area.set_position (rect.x, rect.y);
 		selection_area.selected.connect (on_selection_actor_selected);
 		selection_area.captured.connect (on_selection_actor_captured);
 		selection_area.closed.connect (clear_selection_area);
@@ -72,40 +69,38 @@ public class GalaPW.Plugin : Gala.Plugin
 		selection_area.start_selection ();
 	}
 
-	private void on_selection_actor_selected (float x, float y)
+	private void on_selection_actor_selected (int x, int y)
 	{
 		clear_selection_area ();
-
-		var screen = wm.get_screen ();
-
-		int screen_width, screen_height;
-		screen.get_size (out screen_width, out screen_height);
-
-		var selected = get_window_actor_at (x, y);
-		if (selected != null) {
-			var popup_window = new PopupWindow (selected, null, screen_width, screen_height);
-			add_window (popup_window);
-		}
+		select_window_at (x, y);
 	}
 
 	private void on_selection_actor_captured (int x, int y, int width, int height)
 	{
 		clear_selection_area ();
 
-		var screen = wm.get_screen ();
+		if (width < MIN_SELECTION_SIZE || height < MIN_SELECTION_SIZE) {
+			select_window_at (x, y);
+		} else {
+			var active = get_active_window_actor ();
+			if (active != null) {
+				int point_x = x - (int)active.x;
+				int point_y = y - (int)active.y;
 
-		int screen_width, screen_height;
-		screen.get_size (out screen_width, out screen_height);
+				var rect = Clutter.Rect.alloc ();
+				var clip = rect.init (point_x, point_y, width, height);
 
-		var active = get_active_window_actor ();
-		if (active != null) {
-			int point_x = x - (int)active.x;
-			int point_y = y - (int)active.y;
+				var popup_window = new PopupWindow (wm, active, clip);
+				add_window (popup_window);
+			}
+		}
+	}
 
-			var rect = Clutter.Rect.alloc ();
-			var clip = rect.init (point_x, point_y, width, height);
-
-			var popup_window = new PopupWindow (active, clip, screen_width, screen_height);
+	private void select_window_at (int x, int y)
+	{
+		var selected = get_window_actor_at (x, y);
+		if (selected != null) {
+			var popup_window = new PopupWindow (wm, selected, null);
 			add_window (popup_window);
 		}
 	}
@@ -136,7 +131,7 @@ public class GalaPW.Plugin : Gala.Plugin
 
 			var window = actor.get_meta_window ();
 			var bbox = actor.get_allocation_box ();
-			if (!window.is_hidden () && bbox.contains (x, y)) {
+			if (!window.is_hidden () && !window.is_skip_taskbar () && bbox.contains (x, y)) {
 				selected = actor;
 			}
 		});
@@ -159,7 +154,7 @@ public class GalaPW.Plugin : Gala.Plugin
 			}
 
 			var window = actor.get_meta_window ();
-			if (window.has_focus ()) {
+			if (!window.is_hidden () && !window.is_skip_taskbar () && window.has_focus ()) {
 				active = actor;
 			}
 		});
