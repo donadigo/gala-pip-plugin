@@ -73,7 +73,7 @@ public class GalaPW.Plugin : Gala.Plugin {
     private void on_selection_actor_captured (int x, int y, int width, int height) {
         clear_selection_area ();
 
-        if (width <= MIN_SELECTION_SIZE || height <= MIN_SELECTION_SIZE) {
+        if (width < MIN_SELECTION_SIZE || height < MIN_SELECTION_SIZE) {
             select_window_at (x, y);
         } else {
             var active = get_active_window_actor ();
